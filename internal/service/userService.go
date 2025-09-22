@@ -4,6 +4,7 @@ import (
 	"github.com/OzyKleyton/studio-api/internal/model"
 	"github.com/OzyKleyton/studio-api/internal/model/user"
 	"github.com/OzyKleyton/studio-api/internal/repository"
+	"github.com/OzyKleyton/studio-api/utils/auth"
 	"github.com/OzyKleyton/studio-api/utils/security"
 )
 
@@ -120,5 +121,10 @@ func (us *UserServiceImpl) Login(userReq user.Login) *model.Response {
 		}
 	}
 
-	return model.NewSuccessResponse(user.ToUserRes())
+	token, err := auth.GenerateToken(*user)
+	if err != nil {
+		return model.NewErrorResponse(err)
+	}
+
+	return model.NewSuccessResponse(token)
 }
