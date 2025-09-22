@@ -22,6 +22,8 @@ func NewUserHandler(service service.UserService) *UserHandler {
 
 func (uh *UserHandler) Routes() router.Router {
 	return func(route fiber.Router) {
+		route.Post("/login", uh.LoginHandler)
+
 		user := route.Group("users")
 		user.Post("/", uh.CreateUserHandler)
 		user.Get("/", uh.FindAllUsersHandler)
@@ -73,6 +75,17 @@ func (uh *UserHandler) DeleteUserHandler(c *fiber.Ctx) error {
 	userID, _ := strconv.Atoi(c.Params("id", "0"))
 
 	res := uh.service.DeleteUser(uint(userID))
+
+	return c.Status(res.Status).JSON(res)
+}
+
+func (uh *UserHandler) LoginHandler(c *fiber.Ctx) error {
+	userReq := new(user.Login)
+	if err := c.BodyParser(userReq); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(model.NewErrorResponse(err, fiber.ErrBadRequest))
+	}
+
+	res := uh.service.Login(*userReq)
 
 	return c.Status(res.Status).JSON(res)
 }
