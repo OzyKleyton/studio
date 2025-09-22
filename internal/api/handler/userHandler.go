@@ -3,10 +3,11 @@ package handler
 import (
 	"strconv"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/OzyKleyton/studio-api/internal/api/router"
 	"github.com/OzyKleyton/studio-api/internal/model"
+	"github.com/OzyKleyton/studio-api/internal/model/user"
 	"github.com/OzyKleyton/studio-api/internal/service"
+	"github.com/gofiber/fiber/v2"
 )
 
 type UserHandler struct {
@@ -31,7 +32,7 @@ func (uh *UserHandler) Routes() router.Router {
 }
 
 func (uh *UserHandler) CreateUserHandler(c *fiber.Ctx) error {
-	userReq := new(model.UserReq)
+	userReq := new(user.UserReq)
 	if err := c.BodyParser(userReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(model.NewErrorResponse(err, fiber.ErrBadRequest))
 	}
@@ -56,7 +57,7 @@ func (uh *UserHandler) FindUserByEmailHandler(c *fiber.Ctx) error {
 }
 
 func (uh *UserHandler) UpdateUserHandler(c *fiber.Ctx) error {
-	userReq := new(model.UserReq)
+	userReq := new(user.UserReq)
 	if err := c.BodyParser(userReq); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(model.NewErrorResponse(err, fiber.ErrBadRequest))
 	}

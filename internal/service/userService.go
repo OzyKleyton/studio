@@ -2,14 +2,15 @@ package service
 
 import (
 	"github.com/OzyKleyton/studio-api/internal/model"
+	"github.com/OzyKleyton/studio-api/internal/model/user"
 	"github.com/OzyKleyton/studio-api/internal/repository"
 )
 
 type UserService interface {
-	CreateUser(userReq *model.UserReq) *model.Response
+	CreateUser(userReq *user.UserReq) *model.Response
 	FindAllUsers() *model.Response
 	FindUserByEmail(email string) *model.Response
-	UpdateUser(id uint, userReq *model.UserReq) *model.Response
+	UpdateUser(id uint, userReq *user.UserReq) *model.Response
 	DeleteUser(id uint) *model.Response
 }
 
@@ -23,7 +24,7 @@ func NewUserService(repo repository.UserRepository) UserService {
 	}
 }
 
-func (us *UserServiceImpl) CreateUser(userReq *model.UserReq) *model.Response {
+func (us *UserServiceImpl) CreateUser(userReq *user.UserReq) *model.Response {
 	user := userReq.ToUser()
 
 	createUser, err := us.repo.Create(user)
@@ -40,7 +41,7 @@ func (us *UserServiceImpl) FindAllUsers() *model.Response {
 		return model.NewErrorResponse(err, 404)
 	}
 
-	usersResponse := []*model.UserRes{}
+	usersResponse := []*user.UserRes{}
 	for _, u := range users {
 		usersResponse = append(usersResponse, u.ToUserRes())
 	}
@@ -57,13 +58,13 @@ func (us *UserServiceImpl) FindUserByEmail(email string) *model.Response {
 	return model.NewSuccessResponse(user.ToUserRes())
 }
 
-func (us *UserServiceImpl) UpdateUser(id uint, userReq *model.UserReq) *model.Response {
+func (us *UserServiceImpl) UpdateUser(id uint, userReq *user.UserReq) *model.Response {
 	user, err := us.repo.FindByID(id)
 	if err != nil {
 		return model.NewErrorResponse(err, 404)
 	}
 
-	user.Name = userReq.Name
+	user.Username = userReq.Username
 	user.Email = userReq.Email
 
 	updateUser, err := us.repo.Update(user)

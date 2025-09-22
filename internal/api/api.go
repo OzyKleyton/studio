@@ -9,14 +9,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/OzyKleyton/studio-api/config"
 	"github.com/OzyKleyton/studio-api/config/db"
 	"github.com/OzyKleyton/studio-api/internal/api/handler"
 	"github.com/OzyKleyton/studio-api/internal/api/router"
-	"github.com/OzyKleyton/studio-api/internal/model"
+	"github.com/OzyKleyton/studio-api/internal/model/user"
 	"github.com/OzyKleyton/studio-api/internal/repository"
 	"github.com/OzyKleyton/studio-api/internal/service"
+	"github.com/gofiber/fiber/v2"
 )
 
 func Run(host, port string) error {
@@ -41,7 +41,7 @@ func Run(host, port string) error {
 	db = db.WithContext(ctx)
 
 	if err := db.AutoMigrate(
-		&model.User{},
+		&user.User{},
 	); err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func Run(host, port string) error {
 		<-c
 		fmt.Println("Gracefully shutting down...")
 		cancel()
-		errc <-app.Shutdown()
+		errc <- app.Shutdown()
 	}()
 
 	if err := app.Listen(address); err != nil {

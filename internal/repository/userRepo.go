@@ -1,17 +1,17 @@
 package repository
 
 import (
-	"github.com/OzyKleyton/studio-api/internal/model"
+	"github.com/OzyKleyton/studio-api/internal/model/user"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	Create(user *model.User) (*model.User, error)
-	FindAll() ([]model.User, error)
-	FindByID(id uint) (user *model.User, err error)
-	FindByEmail(email string) (*model.User, error)
-	Update(user *model.User) (*model.User, error)
-	Delete(id uint) (user *model.User, err error)
+	Create(user *user.User) (*user.User, error)
+	FindAll() ([]user.User, error)
+	FindByID(id uint) (user *user.User, err error)
+	FindByEmail(email string) (*user.User, error)
+	Update(user *user.User) (*user.User, error)
+	Delete(id uint) (user *user.User, err error)
 }
 
 type UserRepo struct {
@@ -24,7 +24,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	}
 }
 
-func (u *UserRepo) Create(user *model.User) (*model.User, error) {
+func (u *UserRepo) Create(user *user.User) (*user.User, error) {
 	if err := u.db.Create(user).Error; err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (u *UserRepo) Create(user *model.User) (*model.User, error) {
 	return user, nil
 }
 
-func (u *UserRepo) FindAll() (users []model.User, err error) {
+func (u *UserRepo) FindAll() (users []user.User, err error) {
 	if err := u.db.Find(&users).Error; err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (u *UserRepo) FindAll() (users []model.User, err error) {
 	return users, nil
 }
 
-func (u *UserRepo) FindByID(id uint) (user *model.User, err error) {
+func (u *UserRepo) FindByID(id uint) (user *user.User, err error) {
 	if err := u.db.First(&user, "id = ?", id).Error; err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (u *UserRepo) FindByID(id uint) (user *model.User, err error) {
 	return user, nil
 }
 
-func (u *UserRepo) FindByEmail(email string) (user *model.User, err error) {
+func (u *UserRepo) FindByEmail(email string) (user *user.User, err error) {
 	if err := u.db.First(&user, "email = ?", email).Error; err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func (u *UserRepo) FindByEmail(email string) (user *model.User, err error) {
 	return user, nil
 }
 
-func (u *UserRepo) Update(user *model.User) (*model.User, error) {
+func (u *UserRepo) Update(user *user.User) (*user.User, error) {
 	if err := u.db.Save(&user).Error; err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (u *UserRepo) Update(user *model.User) (*model.User, error) {
 	return user, nil
 }
 
-func (u *UserRepo) Delete(id uint) (user *model.User, err error) {
+func (u *UserRepo) Delete(id uint) (user *user.User, err error) {
 	if err := u.db.Where("id = ?", id).Delete(&user).Error; err != nil {
 		return nil, err
 	}
