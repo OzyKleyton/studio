@@ -30,6 +30,14 @@ func NewUserService(repo repository.UserRepository) UserService {
 func (us *UserServiceImpl) CreateUser(userReq *user.UserReq) *model.Response {
 	user := userReq.ToUser()
 
+	if user.Email == "" || user.Username == "" || user.Password == "" {
+		return &model.Response{
+			Status:  400,
+			Message: "Email or Username or Password cannot be empty",
+			Data:    nil,
+		}
+	}
+
 	hash, err := security.EncodePassword(userReq.Password)
 	if err != nil {
 		return model.NewErrorResponse(err)
