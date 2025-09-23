@@ -1,24 +1,15 @@
-package model
-
-import "gorm.io/gorm"
-
-type User struct {
-	gorm.Model
-	Name     string
-	Email    string
-	Password string
-}
+package user
 
 type UserReq struct {
-	Name     string `json:"name"`
+	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 type UserRes struct {
-	ID    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+	ID       uint   `json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
 type Login struct {
@@ -28,7 +19,7 @@ type Login struct {
 
 func (u *UserReq) ToUser() *User {
 	return &User{
-		Name:     u.Name,
+		Username: u.Username,
 		Email:    u.Email,
 		Password: u.Password,
 	}
@@ -36,8 +27,8 @@ func (u *UserReq) ToUser() *User {
 
 func (ur *User) ToUserRes() *UserRes {
 	return &UserRes{
-		ID:    ur.ID,
-		Name:  ur.Name,
-		Email: ur.Email,
+		ID:       ur.ID,
+		Username: ur.Username,
+		Email:    ur.Email,
 	}
 }
