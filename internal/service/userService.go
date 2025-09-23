@@ -134,5 +134,14 @@ func (us *UserServiceImpl) Login(userReq user.Login) *model.Response {
 		return model.NewErrorResponse(err)
 	}
 
-	return model.NewSuccessResponse(token)
+	loginResponse := map[string]any{
+		"token": token,
+		"user": map[string]any{
+			"id":       user.ID,
+			"username": user.Username,
+			"email":    user.Email,
+		},
+	}
+
+	return model.NewSuccessResponse(loginResponse)
 }

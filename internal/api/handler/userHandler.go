@@ -3,6 +3,7 @@ package handler
 import (
 	"strconv"
 
+	"github.com/OzyKleyton/studio-api/internal/api/middleware"
 	"github.com/OzyKleyton/studio-api/internal/api/router"
 	"github.com/OzyKleyton/studio-api/internal/model"
 	"github.com/OzyKleyton/studio-api/internal/model/user"
@@ -23,13 +24,16 @@ func NewUserHandler(service service.UserService) *UserHandler {
 func (uh *UserHandler) Routes() router.Router {
 	return func(route fiber.Router) {
 		route.Post("/login", uh.LoginHandler)
+		route.Post("/users", uh.CreateUserHandler)
 
-		user := route.Group("users")
-		user.Post("/", uh.CreateUserHandler)
-		user.Get("/", uh.FindAllUsersHandler)
-		user.Get("/:email", uh.FindUserByEmailHandler)
-		user.Put("/:id", uh.UpdateUserHandler)
-		user.Delete("/:id", uh.DeleteUserHandler)
+		protected := route.Group("", middleware.AuthJwt())
+		users := protected.Group("/users")
+
+		users.Get("/", uh.FindAllUsersHandler)
+		users.Get("/:email", uh.FindUserByEmailHandler)
+		users.Put("/:id", uh.UpdateUserHandler)
+		users.Delete("/:id", uh.DeleteUserHandler)
+		// users.Get("/me", uh.GetCurrentUserHandler)
 	}
 }
 
